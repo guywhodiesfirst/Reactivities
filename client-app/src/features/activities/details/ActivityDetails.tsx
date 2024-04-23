@@ -10,19 +10,24 @@ import {
     ButtonGroup,
     Button,
   } from 'semantic-ui-react'
-import { Activity } from "../../../app/models/activity";
+import { useStore } from "../../../app/stores/store";
+import LoadingComponent from "../../../app/layout/LoadingComponent";
 
-  interface Props {
-    activity: Activity,
-    cancelSelectedActivity: () => void;
-    openForm: (id: string) => void; 
-  }
-export default function ActivityDetails({activity, cancelSelectedActivity, openForm} : Props){
+export default function ActivityDetails(){
+
+    const {activityStore} = useStore();
+    const {selectedActivity: activity, openForm, cancelSelectedActivity} = activityStore;
+    const defaultCategories = ['culture', 'drinks', 'film', 'food', 'music', 'travel']
+    if(!activity) return <LoadingComponent/>;
+    const url_img =
+    defaultCategories.includes(activity.category.toLocaleLowerCase()) ? 
+    `/assets/categoryImages/${activity.category.toLocaleLowerCase()}.jpg` 
+    : '/assets/categoryImages/none.jpg'
     return(
         <Card fluid>
-            <Image src={`/assets/categoryImages/${activity.category.toLocaleLowerCase()}.jpg`}/>
+            <Image src={url_img}/>
             <CardContent>
-                <CardHeader>Matthew</CardHeader>
+                <CardHeader>{activity.title}</CardHeader>
                 <CardMeta>
                     <span>{activity.date}</span>
                 </CardMeta>
